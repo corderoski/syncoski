@@ -15,6 +15,8 @@ namespace Syncoski.Framework
 
         private SyncerComparer _syncerComparer;
 
+        private SyncerWatcher _syncerWatcher;
+
         private readonly TimeSpan _delaySpan;
 
         private bool _isRunning;
@@ -24,6 +26,8 @@ namespace Syncoski.Framework
             _isRunning = false;
             _delaySpan = TimeSpan.FromSeconds(2);
             _syncerComparer = new SyncerComparer();
+            _syncerWatcher = new SyncerWatcher();
+            ChangesDetected += (sender, args) => OnChangesDetected(args);
         }
 
         public void Start(string path)
@@ -39,24 +43,16 @@ namespace Syncoski.Framework
                 FileHelper.SaveStream(FileManager.GetAppFile(), content);
             }
 
+            _syncerWatcher.Register(path, (sender, args) => OnChangesDetected(args));
+
+
             while (_isRunning)
             {
-                //Task.Run(() =>
-                //    {
-
-                var equal = actualServer.Equals(localRepository);
-
-                if (!equal)
-                {
-                    //_syncerComparer.Compare(localRepository, actualServer);
-
-
-                   
-                    OnChangesDetected();
-                }
-
-                Task.Delay(_delaySpan).Wait();
-                //});
+                Task.Run(() =>
+                    {
+                        _syncerWatcher.Listen();
+                        Task.Delay(_delaySpan).Wait();
+                    });
             }
         }
 
@@ -67,8 +63,12 @@ namespace Syncoski.Framework
 
         protected virtual void OnChangesDetected(SyncerEventArgs e)
         {
-            EventHandler<SyncerEventArgs> handler = ChangesDetected;
+            //  External use
+            var handler = ChangesDetected;
             if (handler != null) handler(this, e);
+
+            //  Internal use
+
         }
 
         //private static IEnumerable<NodeString> GetStructure(string path)
