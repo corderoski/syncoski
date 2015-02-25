@@ -54,7 +54,7 @@
     <Compile Include="Entities\SyncFileOrigin.cs" />
     <Compile Include="SyncerComparer.cs" />
     <Compile Include="SyncerEventArgs.cs" />
-    <Compile Include="SyncWatcher.cs" />
+    <Compile Include="SyncerWatcher.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
