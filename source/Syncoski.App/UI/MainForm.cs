@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Syncoski.App.UI
@@ -21,10 +15,11 @@ namespace Syncoski.App.UI
         {
             InitializeComponent();
             //
-            this.textBox1.ReadOnly = true;
+            this.textBox1.ReadOnly = false;
             //
             this.Icon = Properties.Resources.logo_win;
             this.Text = Program.APP_NAME;
+            this.Opacity = 40;
             this.MaximizeBox = false;
             this.FormClosing += Form_FormClosing;
         }
@@ -33,6 +28,11 @@ namespace Syncoski.App.UI
         {
             EventHandler<string> handler = ServerPathChange;
             if (handler != null) handler(this, e);
+        }
+
+        private void MinimizeWindow()
+        {
+            Hide();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -56,9 +56,12 @@ namespace Syncoski.App.UI
             Close();
         }
 
-        private void MinimizeWindow()
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            Hide();
+            if (System.IO.Directory.Exists(textBox1.Text))
+            {
+                OnServerPathChange(textBox1.Text);
+            }
         }
 
         private void btnChangePath_Click(object sender, EventArgs e)
@@ -73,6 +76,7 @@ namespace Syncoski.App.UI
                 OnServerPathChange(dialog.SelectedPath);
             }
         }
+
 
     }
 }

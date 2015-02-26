@@ -63,6 +63,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(254, 20);
             this.textBox1.TabIndex = 2;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // btnChangePath
             // 
@@ -78,11 +79,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(312, 95);
+            this.ClientSize = new System.Drawing.Size(312, 96);
             this.Controls.Add(this.btnChangePath);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblExit);
+            this.MaximumSize = new System.Drawing.Size(328, 134);
+            this.MinimumSize = new System.Drawing.Size(328, 134);
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "MainForm";
