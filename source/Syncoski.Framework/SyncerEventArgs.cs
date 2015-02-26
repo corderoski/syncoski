@@ -5,9 +5,10 @@ namespace Syncoski.Framework
     public class SyncerEventArgs : EventArgs
     {
         public SyncerWatcherAction ActionType { get; set; }
+        public ItemType ItemType { get; set; }
         public String Item { get; set; }
         public String OldItem { get; set; }
-
+        public String FullPath { get; set; }
     }
 
     public enum SyncerWatcherAction
@@ -29,4 +30,11 @@ namespace Syncoski.Framework
         //     The renaming of a file or folder.
         Renamed = 8,
     }
+
+    public enum ItemType
+    {
+        Folder = 1,
+        File = 2
+    }
+
 }

@@ -10,15 +10,17 @@ namespace Syncoski.Framework
 
         private EventHandler<SyncerEventArgs> _handler;
 
+        private string _actualFolder;
+
         public SyncerWatcher()
         {
-            _watcher = new FileSystemWatcher();
-            _watcher.IncludeSubdirectories = true;
+            _watcher = new FileSystemWatcher { IncludeSubdirectories = true };
         }
 
         public void Register(string folder, EventHandler<SyncerEventArgs> handler)
         {
-            _watcher.Path = folder;
+            _actualFolder = folder;
+            _watcher.Path = _actualFolder;
             _watcher.EnableRaisingEvents = true;
             this._handler = handler;
         }
@@ -29,10 +31,12 @@ namespace Syncoski.Framework
             //
             var args = new SyncerEventArgs
                 {
-                    ActionType = (SyncerWatcherAction) ((int) result.ChangeType),
+                    ActionType = (SyncerWatcherAction)((int)result.ChangeType),
                     Item = result.Name,
-                    OldItem = result.OldName
+                    OldItem = result.OldName,
+                    FullPath = Path.Combine(_actualFolder, result.Name)
                 };
+            args.ItemType = String.IsNullOrEmpty(Path.GetExtension(args.Item)) ? ItemType.Folder : ItemType.File;
             _handler(this, args);
         }
 
