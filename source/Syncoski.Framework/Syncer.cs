@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Syncoski.Framework.IO;
 using VGExplorer.Framework.Entities;
@@ -13,48 +12,47 @@ namespace Syncoski.Framework
 
         public event EventHandler<SyncerEventArgs> ChangesDetected;
 
-        private SyncerComparer _syncerComparer;
-
-        private SyncerWatcher _syncerWatcher;
+        private readonly SyncerWatcher _syncerWatcher;
 
         private readonly TimeSpan _delaySpan;
 
         private bool _isRunning;
+        private NodeString _actualServer;
 
         public Syncer()
         {
             _isRunning = false;
-            _delaySpan = TimeSpan.FromSeconds(2);
-            _syncerComparer = new SyncerComparer();
+            _delaySpan = TimeSpan.FromSeconds(0);
             _syncerWatcher = new SyncerWatcher();
-            ChangesDetected += (sender, args) => OnChangesDetected(args);
+        }
+
+        public async Task StartAsync(string path)
+        {
+            await Task.Run(() => Start(path));
         }
 
         public void Start(string path)
         {
             _isRunning = true;
 
-            var actualServer = NodeStringFactory.CreateNodeString(path);
+            _actualServer = NodeStringFactory.CreateNodeString(path);
             var localRepository = JsonHelper.Deserialize<NodeString>(FileManager.GetAppFileContent());
 
             if (localRepository == null)
-            {
-                var content = JsonHelper.Serialize(actualServer);
-                FileHelper.SaveStream(FileManager.GetAppFile(), content);
-            }
+                SaveActualServer(_actualServer);
 
             _syncerWatcher.Register(path, (sender, args) => OnChangesDetected(args));
 
-
             while (_isRunning)
             {
-                Task.Run(() =>
-                    {
-                        _syncerWatcher.Listen();
-                        Task.Delay(_delaySpan).Wait();
-                    });
+                _syncerWatcher.Listen();
+                Task.Delay(_delaySpan).Wait();
             }
+
+            _actualServer = NodeStringFactory.CreateNodeString(path);
+            SaveActualServer(_actualServer);
         }
+
 
         public void Stop()
         {
@@ -63,20 +61,20 @@ namespace Syncoski.Framework
 
         protected virtual void OnChangesDetected(SyncerEventArgs e)
         {
+            //  Internal use
+            System.Diagnostics.Debug.WriteLine(String.Format("{0} - [{2}] {1}", e.ActionType, e.Item, e.ItemType));
+
             //  External use
             var handler = ChangesDetected;
             if (handler != null) handler(this, e);
-
-            //  Internal use
-
         }
 
-        //private static IEnumerable<NodeString> GetStructure(string path)
-        //{
-        //    var content = FileHelper.OpenStream(path);
-        //    var nodes = JsonHelper.DeserializeNodeStringArray(content);
-        //    return nodes;
-        //}
+
+        private void SaveActualServer(NodeString actualServer)
+        {
+            var content = JsonHelper.Serialize(actualServer);
+            FileHelper.SaveStream(FileManager.GetAppFile(), content);
+        }
 
     }
 }
