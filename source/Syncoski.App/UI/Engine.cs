@@ -13,8 +13,10 @@ namespace Syncoski.App.UI
 
         public Engine()
         {
+            Helpers.IOPath.CreateShortcutByShellLink();
+
             _syncer = new Syncer();
-            _syncer.ChangesDetected+= SyncerOnChangesDetected;
+            _syncer.ChangesDetected += SyncerOnChangesDetected;
             //
             _contextMenuStrip = new ContextMenuStrip();
             _notifyIcon = new NotifyIcon();
@@ -31,6 +33,7 @@ namespace Syncoski.App.UI
             _notifyIcon.Visible = true;
             _notifyIcon.Icon = Properties.Resources.logo_win;
             _notifyIcon.DoubleClick += NotifyIconOnDoubleClick;
+            _notifyIcon.BalloonTipClicked += BalloonTipClicked;
         }
 
 
@@ -41,10 +44,23 @@ namespace Syncoski.App.UI
             return _frmMain;
         }
 
+
+        
+
         private void SyncerOnChangesDetected(object sender, SyncerEventArgs e)
         {
+            _lastSyncerEventArgs = e;
             _notifyIcon.ShowBalloonTip(2000, Program.APP_NAME,
-                   String.Format("{0} - {1}", e.ActionType, e.Item), ToolTipIcon.Info);
+                   String.Format("{0} - {1}", _lastSyncerEventArgs.ActionType, _lastSyncerEventArgs.Item), ToolTipIcon.Info);
+        }
+
+        void BalloonTipClicked(object sender, EventArgs e)
+        {
+            if (_lastSyncerEventArgs == null) return;
+
+            var path = _lastSyncerEventArgs.ActionType == SyncerWatcherAction.Deleted ?
+                           System.IO.Path.GetDirectoryName(_lastSyncerEventArgs.FullPath) : _lastSyncerEventArgs.FullPath;
+            System.Diagnostics.Process.Start("explorer", String.Format("/select,{0}", path));
         }
 
         private void NotifyIconOnDoubleClick(object sender, EventArgs e)
@@ -55,6 +71,6 @@ namespace Syncoski.App.UI
         private readonly NotifyIcon _notifyIcon;
         private readonly ContextMenuStrip _contextMenuStrip;
         private readonly MainForm _frmMain;
-     
+        private SyncerEventArgs _lastSyncerEventArgs;
     }
 }
