@@ -54,6 +54,7 @@
     <Compile Include="Entities\SyncFileOrigin.cs" />
     <Compile Include="SyncerComparer.cs" />
     <Compile Include="SyncerEventArgs.cs" />
+    <Compile Include="SyncerState.cs" />
     <Compile Include="SyncerWatcher.cs" />
   </ItemGroup>
   <ItemGroup />

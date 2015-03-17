@@ -17,30 +17,36 @@ namespace Syncoski.Framework
         private readonly TimeSpan _delaySpan;
 
         private bool _isRunning;
-        private NodeString _actualServer;
+
+        public SyncerState State { get; private set; }
+
+        /*private NodeString _actualServer;*/
 
         public Syncer()
         {
             _isRunning = false;
+            State = SyncerState.New;
             _delaySpan = TimeSpan.FromSeconds(0);
             _syncerWatcher = new SyncerWatcher();
         }
 
         public async Task StartAsync(string path)
         {
+            State = SyncerState.Running;
             await Task.Run(() => Start(path));
         }
 
         public void Start(string path)
         {
             _isRunning = true;
-
+            State = SyncerState.Running;
+            /*
             _actualServer = NodeStringFactory.CreateNodeString(path);
             var localRepository = JsonHelper.Deserialize<NodeString>(FileManager.GetAppFileContent());
 
             if (localRepository == null)
                 SaveActualServer(_actualServer);
-
+            */
             _syncerWatcher.Register(path, (sender, args) => OnChangesDetected(args));
 
             while (_isRunning)
@@ -48,15 +54,17 @@ namespace Syncoski.Framework
                 _syncerWatcher.Listen();
                 Task.Delay(_delaySpan).Wait();
             }
-
+           
+            /*
             _actualServer = NodeStringFactory.CreateNodeString(path);
-            SaveActualServer(_actualServer);
+            SaveActualServer(_actualServer);*/
         }
-
 
         public void Stop()
         {
+            State = SyncerState.Stopped;
             _isRunning = false;
+            _syncerWatcher.Clean();
         }
 
         protected virtual void OnChangesDetected(SyncerEventArgs e)
@@ -68,7 +76,6 @@ namespace Syncoski.Framework
             var handler = ChangesDetected;
             if (handler != null) handler(this, e);
         }
-
 
         private void SaveActualServer(NodeString actualServer)
         {

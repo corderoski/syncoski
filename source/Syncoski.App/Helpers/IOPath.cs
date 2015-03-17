@@ -10,6 +10,19 @@ namespace Syncoski.App.Helpers
 
         const string ShortcutName = "Syncoski.lnk";
 
+        /// <summary>
+        /// Checks if the Shortcut already exists.
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckIfExists()
+        {
+            var path = GetPath();
+            return File.Exists(path);
+        }
+
+        /// <summary>
+        /// Creates a shortcut to the startup folder by using the ShellLink Assembly.
+        /// </summary>
         public static void CreateShortcutByShellLink()
         {
             if (CheckIfExists()) return;
@@ -27,6 +40,9 @@ namespace Syncoski.App.Helpers
             file.Save(Path.Combine(finalPath, ShortcutName), false);
         }
 
+        /// <summary>
+        /// Creates a shortcut to the startup folder by using the a Marshall from a Windows Script Object.
+        /// </summary>
         public static void CreateShortcutByMarshal()
         {
             if (CheckIfExists()) return;
@@ -53,10 +69,21 @@ namespace Syncoski.App.Helpers
             }
         }
 
-        private static bool CheckIfExists()
+        /// <summary>
+        /// Deletes the default shortcut.
+        /// </summary>
+        public static void DeleteShortcut()
+        {
+            if (!CheckIfExists()) return;
+
+            var path = GetPath();
+            File.Delete(path);
+        }
+
+        private static string GetPath()
         {
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), ShortcutName);
-            return File.Exists(path);
+            return path;
         }
 
     }

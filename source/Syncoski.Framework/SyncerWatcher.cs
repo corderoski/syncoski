@@ -17,6 +17,11 @@ namespace Syncoski.Framework
             _watcher = new FileSystemWatcher { IncludeSubdirectories = true };
         }
 
+        public void Clean()
+        {
+            GC.Collect();
+        }
+
         public void Register(string folder, EventHandler<SyncerEventArgs> handler)
         {
             _actualFolder = folder;
