@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Syncoski - A lite sync's response.")]
+[assembly: AssemblyTitle("Syncoski - A tiny, little, small syncer.")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Corderoski")]
@@ -19,5 +19,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 
-[assembly: AssemblyVersion("0.1.0.*")]
+[assembly: AssemblyVersion("0.1.2.*")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

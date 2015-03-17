@@ -7,9 +7,6 @@ namespace Syncoski.Framework
 
         public const String APP_COMPANY = "Corderoski";
 
-
         public const String APP_NAME = "Syncoski";
-
-
     }
 }

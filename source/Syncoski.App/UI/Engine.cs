@@ -11,31 +11,23 @@ namespace Syncoski.App.UI
 
         private String _actualSyncerPath;
 
+        public SyncerState State { get { return _syncer.State; } }
+
         public Engine()
         {
-            Helpers.IOPath.CreateShortcutByShellLink();
-
             _syncer = new Syncer();
             _syncer.ChangesDetected += SyncerOnChangesDetected;
             //
-            _contextMenuStrip = new ContextMenuStrip();
             _notifyIcon = new NotifyIcon();
-            _frmMain = new UI.MainForm();
-            _frmMain.ServerPathChange += (sender, s) =>
-                {
-                    _actualSyncerPath = s;
-                    _syncer.StartAsync(_actualSyncerPath);
-                };
+            _frmMain = new UI.Main(this);
+            _frmMain.ServerPathChanged += OnMainOnServerPathChanged;
             //
-            //_contextMenuStrip.Items.AddRange(new ToolStripItem[] { null });
-            //_notifyIcon.ContextMenuStrip = _contextMenuStrip;
             _notifyIcon.Text = Program.APP_NAME;
             _notifyIcon.Visible = true;
             _notifyIcon.Icon = Properties.Resources.logo_win;
             _notifyIcon.DoubleClick += NotifyIconOnDoubleClick;
             _notifyIcon.BalloonTipClicked += BalloonTipClicked;
         }
-
 
         public Form Run()
         {
@@ -44,8 +36,23 @@ namespace Syncoski.App.UI
             return _frmMain;
         }
 
+        public void Start(string path = null)
+        {
+            if (!String.IsNullOrEmpty(path) || !String.IsNullOrWhiteSpace(path))
+                _actualSyncerPath = path;
+            _syncer.StartAsync(_actualSyncerPath);
+        }
 
-        
+        public void Stop()
+        {
+            _syncer.Stop();
+        }
+
+        private void OnMainOnServerPathChanged(object sender, string s)
+        {
+            _actualSyncerPath = s;
+            _syncer.StartAsync(_actualSyncerPath);
+        }
 
         private void SyncerOnChangesDetected(object sender, SyncerEventArgs e)
         {
@@ -69,8 +76,8 @@ namespace Syncoski.App.UI
         }
 
         private readonly NotifyIcon _notifyIcon;
-        private readonly ContextMenuStrip _contextMenuStrip;
-        private readonly MainForm _frmMain;
+        private readonly Main _frmMain;
         private SyncerEventArgs _lastSyncerEventArgs;
+
     }
 }
