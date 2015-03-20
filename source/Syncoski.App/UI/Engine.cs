@@ -20,7 +20,6 @@ namespace Syncoski.App.UI
             //
             _notifyIcon = new NotifyIcon();
             _frmMain = new UI.Main(this);
-            _frmMain.ServerPathChanged += OnMainOnServerPathChanged;
             //
             _notifyIcon.Text = Program.APP_NAME;
             _notifyIcon.Visible = true;
@@ -46,12 +45,6 @@ namespace Syncoski.App.UI
         public void Stop()
         {
             _syncer.Stop();
-        }
-
-        private void OnMainOnServerPathChanged(object sender, string s)
-        {
-            _actualSyncerPath = s;
-            _syncer.StartAsync(_actualSyncerPath);
         }
 
         private void SyncerOnChangesDetected(object sender, SyncerEventArgs e)
