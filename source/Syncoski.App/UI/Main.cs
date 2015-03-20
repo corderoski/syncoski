@@ -8,6 +8,7 @@ namespace Syncoski.App.UI
     internal partial class Main : Form
     {
 
+        [Obsolete("Do not use.", true)]
         public event EventHandler<String> ServerPathChanged;
 
         private readonly Engine _engine;
@@ -19,7 +20,12 @@ namespace Syncoski.App.UI
             InitializeComponent();
             _notifyIcon = new NotifyIcon();
             //
-            //_engine = new Engine();
+            this.textBoxSelectedPath.AutoCompleteMode = AutoCompleteMode.Suggest;
+            this.textBoxSelectedPath.AutoCompleteSource = AutoCompleteSource.RecentlyUsedList;
+            this.textBoxSelectedPath.Click += this.textBoxSelectedPath_Click;
+            this.textBoxSelectedPath.LostFocus += textBoxSelectedPath_LostFocus;
+            //this.textBoxSelectedPath.TextChanged += this.textBoxSelectedPath_TextActioner;
+            //this.textBoxSelectedPath.Validated += this.textBoxSelectedPath_TextActioner;
             //
             _notifyIcon.Visible = true;
             this.Icon = Properties.Resources.logo_win;
@@ -29,18 +35,14 @@ namespace Syncoski.App.UI
             this.FormClosing += Form_FormClosing;
             toolStripStateLabel.Text = "...";
             actionButton.Text = "Start";
+            //
+            textBoxSelectedPath.Text = ConfigurationHelper.GetSetting(LastPath);
         }
 
         public Main(Engine engine)
             : this()
         {
             _engine = engine;
-        }
-
-        protected virtual void OnServerPathChange(string e)
-        {
-            EventHandler<string> handler = ServerPathChanged;
-            if (handler != null) handler(this, e);
         }
 
         private string GetSelectedPath()
@@ -62,6 +64,7 @@ namespace Syncoski.App.UI
                     //toolStripStateLabel.Text = "Running";
                     actionButton.Text = "Stop";
                     textBoxSelectedPath.ReadOnly = true;
+                    MinimizeWindow();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -88,7 +91,11 @@ namespace Syncoski.App.UI
             if (_close) return;
             e.Cancel = true;
             MinimizeWindow();
-            _notifyIcon.ShowBalloonTip(1200, Program.APP_NAME, Program.APP_NAME + " still running.", ToolTipIcon.Info);
+        }
+
+        private void textBoxSelectedPath_LostFocus(object sender, EventArgs e)
+        {
+            textBoxSelectedPath.ReadOnly = true;
         }
 
         private void textBoxSelectedPath_Click(object sender, EventArgs e)
@@ -98,6 +105,14 @@ namespace Syncoski.App.UI
 
         private void actionButton_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(GetSelectedPath()))
+            {
+                return;
+            }
+            if (!System.IO.Directory.Exists(GetSelectedPath()))
+            {
+                return;
+            }
             /*
             using (var dialog = new FolderBrowserDialog())
             {
@@ -115,7 +130,6 @@ namespace Syncoski.App.UI
                 case SyncerState.New:
                 case SyncerState.Stopped:
                     _engine.Start(GetSelectedPath());
-                    MakeUIChanges();
                     break;
                 case SyncerState.Running:
                     _engine.Stop();
@@ -128,6 +142,8 @@ namespace Syncoski.App.UI
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            ConfigurationHelper.SaveValue(LastPath, GetSelectedPath());
+            //
             _close = true;
             Close();
         }
@@ -142,17 +158,9 @@ namespace Syncoski.App.UI
             }
         }
 
-        private void textBoxSelectedPath_TextActioner(object sender, EventArgs e)
-        {
-            if (System.IO.Directory.Exists(textBoxSelectedPath.Text))
-            {
-                OnServerPathChange(textBoxSelectedPath.Text);
-                MakeUIChanges();
-            }
-        }
-
         private readonly NotifyIcon _notifyIcon;
 
+        private const string LastPath = "lastPath";
 
     }
 }

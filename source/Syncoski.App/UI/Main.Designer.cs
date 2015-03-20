@@ -65,15 +65,10 @@
             // 
             // textBoxSelectedPath
             // 
-            this.textBoxSelectedPath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.textBoxSelectedPath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
             this.textBoxSelectedPath.Location = new System.Drawing.Point(50, 23);
             this.textBoxSelectedPath.Name = "textBoxSelectedPath";
             this.textBoxSelectedPath.Size = new System.Drawing.Size(233, 20);
             this.textBoxSelectedPath.TabIndex = 3;
-            this.textBoxSelectedPath.Click += new System.EventHandler(this.textBoxSelectedPath_Click);
-            this.textBoxSelectedPath.TextChanged += new System.EventHandler(this.textBoxSelectedPath_TextActioner);
-            this.textBoxSelectedPath.Validated += new System.EventHandler(this.textBoxSelectedPath_TextActioner);
             // 
             // statusStrip1
             // 
