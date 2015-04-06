@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Syncoski - A tiny, little, small syncer.")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Syncoski")]
+[assembly: AssemblyDescription("A tiny, little, small syncer.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Corderoski")]
 [assembly: AssemblyProduct("Syncoski")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
