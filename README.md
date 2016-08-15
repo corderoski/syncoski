@@ -1,54 +1,33 @@
 # README #
 
-asdf jklñ
+A little tool that checks for changes in a specified path (mainly, a network one) and notifies the user.
 
 
-## Syncoski - File Syncer ##
+## Syncoski - File Sync ##
 
-* VGExplorer Tool
-* v 0.9 RC 1
-
-** Distribuciones / Aplicativos: ** 
-
-### Funciones ###
-
-* asdf
-* asdf
-* asdf
-* asdf
+* It's a Developer version, far from an Alpha 
 
 
-## Repositorio ##
+### What contains? ###
 
-
-### Qué contiene? ###
-
-* Código fuente en lenguaje C#
-* Carpeta de recursos (imágenes, íconos)
-
-
-### Cómo instalar repositorio? ###
-
-asdf jklñ
-
-### Acerca del proyecto ###
+* source code
+* resources (images, icons)
 
 
 
-### Licencia ###
+## About the project ##
 
-Éste repositorio y todo el contenido no creado y/o atribuido a terceros, está licenciado bajo la [Creative Commons](https://creativecommons.org/licenses/by-sa/4.0/)
+### License ###
 
-![license_by-sa.png](https://bitbucket.org/repo/dgG8oL/images/2860542338-license_by-sa.png)
-
-
+[Creative Commons](https://creativecommons.org/licenses/by-sa/4.0/)
 
 
-## Contribuciones & Agradecimientos ##
 
-A los Testers:
+## Contributors  ##
+
+Testers:
 
 * Saulo Carrasco
 
-Íconos:
+Icons:
 http://www.famfamfam.com/lab/icons/mini/
